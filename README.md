@@ -1,4 +1,4 @@
-## @adminjs/mongoose
+## tercel-adminjs/mongoose
 
 This is an official [AdminJS](https://github.com/SoftwareBrothers/adminjs) adapter which integrates [mongoose ORM](https://mongoosejs.com/) into AdminJS.
 
@@ -12,7 +12,7 @@ The plugin can be registered using standard `AdminJS.registerAdapter` method.
 
 ```javascript
 const AdminJS = require('adminjs')
-const AdminJSMongoose = require('@adminjs/mongoose')
+const AdminJSMongoose = require('tercel-adminjs-mongoose')
 
 AdminJS.registerAdapter(AdminJSMongoose)
 ```

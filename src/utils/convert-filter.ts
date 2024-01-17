@@ -12,29 +12,43 @@ export const convertFilter = (filter) => {
     return {}
   }
   return filter.reduce((memo, filterProperty) => {
-    const { property, value } = filterProperty
-    switch (property.type()) {
+    const { path, property, value } = filterProperty
+    const pathArray = path.split('.')
+    const key = pathArray[0]
+    let _value:any = value
+    if (pathArray.length === 2) {
+      _value = {
+        [pathArray[1]]: value,
+      }
+    }
+    let _property:any = property
+    if (!_property) {
+      _property = {
+        type() {},
+      }
+    }
+    switch (_property.type()) {
     case 'string':
       return {
-        [property.name()]: { $regex: escape(value), $options: 'i' },
+        [key]: _value,
         ...memo,
       }
     case 'date':
     case 'datetime':
-      if (value.from || value.to) {
+      if (_value.from || _value.to) {
         return {
-          [property.name()]: {
-            ...value.from && { $gte: value.from },
-            ...value.to && { $lte: value.to },
+          [key]: {
+            ..._value.from && { $gte: _value.from },
+            ..._value.to && { $lte: _value.to },
           },
           ...memo,
         }
       }
       break
     case 'id':
-      if (mongoose.Types.ObjectId.isValid(value)) {
+      if (mongoose.Types.ObjectId.isValid(_value)) {
         return {
-          [property.name()]: value,
+          [key]: _value,
           ...memo,
         }
       }
@@ -43,7 +57,7 @@ export const convertFilter = (filter) => {
       break
     }
     return {
-      [property.name()]: value,
+      [key]: _value,
       ...memo,
     }
   }, {})
